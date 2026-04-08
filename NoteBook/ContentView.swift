@@ -8,14 +8,32 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var contentViewModel = ContentViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            List {
+                ForEach(contentViewModel.notes) { note in
+                    VStack{
+                        Text(note.name)
+                    }
+                }
+            }
+            .listStyle(.plain)
+            .navigationTitle("Notes")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        AddNewNoteView(viewModel: contentViewModel)
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                    }
+                }
+            }
         }
-        .padding()
+        .onAppear {
+            contentViewModel.readSavedNotes()
+        }
     }
 }
 
